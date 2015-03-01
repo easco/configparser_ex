@@ -1,5 +1,6 @@
 ConfigParser
 ============
+[![BuildStatus](https://travis-ci.org/easco/configparser_ex.svg?branch=master)](https://travis-ci.org/easco/configparser_ex)
 
 This library implements a parser for config files in the style of Windows INI, as parsed by the Python [configparser](https://docs.python.org/3/library/configparser.html) library.
 
