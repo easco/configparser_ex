@@ -101,3 +101,7 @@ If the parser encounters an error, then the first part of the tuple will be the 
 {:error, "Syntax Error on line 3"}
 ```
 
+Not Implemented
+---------------
+
+This library currently returns the parsed result as a raw data structure and does not include the Python ConfigParser's `get` function.  As a result, it also does not support the value interpolation in the Python library.  This library also does not support the Python ConfigParser's customization features.
