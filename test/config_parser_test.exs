@@ -1,152 +1,114 @@
 defmodule ConfigParserTest do
   use ExUnit.Case
 
-  test "parses an empty file" do
-    {:ok, pid} = StringIO.open("")
+  def check_string(string, against_value) do
+    {:ok, pid} = StringIO.open(string)
     line_stream = IO.stream(pid, :line)
 
-    assert {:ok, %{}} == ConfigParser.parse_stream(line_stream)
+    assert against_value == ConfigParser.parse_stream(line_stream)
+  end
+
+  test "parses an empty file" do
+    check_string("", {:ok, %{}})
   end
 
   test "parses an comment only file" do
-    {:ok, pid} = StringIO.open("#this is a useless file\n")
-    line_stream = IO.stream(pid, :line)
-
-    assert {:ok, %{}} == ConfigParser.parse_stream(line_stream)
+    check_string("#this is a useless file\n", {:ok, %{}})
   end
 
   test "parses comments and empty lines" do
-    {:ok, pid} = StringIO.open("""
+    check_string("""
       #this is a useless file
 
         # filled with comments and empty lines
-      """)
-    line_stream = IO.stream(pid, :line)
-
-    assert {:ok, %{}} == ConfigParser.parse_stream(line_stream)
+      """, {:ok, %{}} )
   end
 
   test "parses a single section" do
-    {:ok, pid} = StringIO.open("[section]\n")
-    line_stream = IO.stream(pid, :line)
-
-    assert {:ok, %{"section" => %{}}} == ConfigParser.parse_stream(line_stream)
+    check_string("[section]\n", {:ok, %{"section" => %{}}} )
   end
 
   test "parses a section name with a space" do
-    {:ok, pid} = StringIO.open("[section with space]\n")
-    line_stream = IO.stream(pid, :line)
-
-    assert {:ok, %{"section with space" => %{}}} == ConfigParser.parse_stream(line_stream)
+    check_string("[section with space]\n", {:ok, %{"section with space" => %{}}} )
   end
 
   test "parses a config option into a section" do
-    {:ok, pid} = StringIO.open("""
+    check_string("""
       [section]
       # this is an interesting key value pair
       key = value
-      """)
-    line_stream = IO.stream(pid, :line)
-
-    assert {:ok, %{"section" => %{"key" => "value"}}} == ConfigParser.parse_stream(line_stream)
+      """, {:ok, %{"section" => %{"key" => "value"}}} )
   end
 
   test "allows spaces in the keys" do
-    {:ok, pid} = StringIO.open("""
+    check_string("""
       [section]
       # this is an interesting key value pair
       spaces in keys=allowed
-      """)
-    line_stream = IO.stream(pid, :line)
-
-    assert {:ok, %{"section" => %{"spaces in keys" => "allowed"}}} == ConfigParser.parse_stream(line_stream)
+      """, {:ok, %{"section" => %{"spaces in keys" => "allowed"}}} )
   end
 
   test "allows spaces in the values" do
-    {:ok, pid} = StringIO.open("""
+    check_string("""
       [section]
       # this is an interesting key value pair
       spaces in values=allowed as well
-      """)
-    line_stream = IO.stream(pid, :line)
-
-    assert {:ok, %{"section" => %{"spaces in values" => "allowed as well"}}} == ConfigParser.parse_stream(line_stream)
+      """, {:ok, %{"section" => %{"spaces in values" => "allowed as well"}}} )
   end
 
   test "allows spaces around the delimiter" do
-    {:ok, pid} = StringIO.open("""
+    check_string("""
       [section]
       # this is an interesting key value pair
       spaces around the delimiter = obviously
-      """)
-    line_stream = IO.stream(pid, :line)
-
-    assert {:ok, %{"section" => %{"spaces around the delimiter" => "obviously"}}} == ConfigParser.parse_stream(line_stream)
+      """, {:ok, %{"section" => %{"spaces around the delimiter" => "obviously"}}} )
   end
 
   test "allows a colon as the delimiter" do
-    {:ok, pid} = StringIO.open("""
+    check_string("""
       [section]
       # this is an interesting key value pair
       you can also use : to delimit keys from values
-      """)
-    line_stream = IO.stream(pid, :line)
-
-    assert {:ok, %{"section" => %{"you can also use" => "to delimit keys from values"}}} == ConfigParser.parse_stream(line_stream)
+      """, {:ok, %{"section" => %{"you can also use" => "to delimit keys from values"}}} )
   end
 
   test "allows a continuation line" do
-    {:ok, pid} = StringIO.open("""
+    check_string("""
       [section]
       you can also use : to delimit keys from values
           and add a continuation
-      """)
-    line_stream = IO.stream(pid, :line)
-
-    assert {:ok, %{"section" => %{"you can also use" => "to delimit keys from values and add a continuation"}}} == ConfigParser.parse_stream(line_stream)
+      """, {:ok, %{"section" => %{"you can also use" => "to delimit keys from values and add a continuation"}}} )
   end
 
   test "allows a multi-line continuation" do
-    {:ok, pid} = StringIO.open("""
+    check_string("""
       [section]
       you can also use : to delimit keys 
           from values
           and add a continuation
-      """)
-    line_stream = IO.stream(pid, :line)
-
-    assert {:ok, %{"section" => %{"you can also use" => "to delimit keys from values and add a continuation"}}} == ConfigParser.parse_stream(line_stream)
+      """, {:ok, %{"section" => %{"you can also use" => "to delimit keys from values and add a continuation"}}} )
   end
 
   test "allows empty string thing" do
-    {:ok, pid} = StringIO.open("""
+    check_string("""
       [No Values]
       empty string value here =
-      """)
-    line_stream = IO.stream(pid, :line)
-
-    assert {:ok, %{"No Values" => %{"empty string value here" => ""}}} == ConfigParser.parse_stream(line_stream)
+      """, {:ok, %{"No Values" => %{"empty string value here" => ""}}} )
   end
 
   test "allows lone keys" do
-    {:ok, pid} = StringIO.open("""
+    check_string("""
       [No Values]
       key_without_value
-      """)
-    line_stream = IO.stream(pid, :line)
-
-    assert {:ok, %{"No Values" => %{"key_without_value" => nil}}} == ConfigParser.parse_stream(line_stream)
+      """, {:ok, %{"No Values" => %{"key_without_value" => nil}}} )
   end
 
   test "parses a config option with an inline comment" do
-    {:ok, pid} = StringIO.open("""
+    check_string("""
       [section]
       # this is an interesting key value pair
       key = value ; With a comment
-      """)
-    line_stream = IO.stream(pid, :line)
-
-    assert {:ok, %{"section" => %{"key" => "value"}}} == ConfigParser.parse_stream(line_stream)
+      """, {:ok, %{"section" => %{"key" => "value"}}} )
   end
 
   test "lines starting with a hash are comments" do
@@ -176,7 +138,7 @@ defmodule ConfigParserTest do
   end
 
   test "parses extended example from python page" do
-    {:ok, pid} = StringIO.open("""
+    check_string("""
       [Simple Values]
       key=value
       spaces in keys=allowed
@@ -218,10 +180,7 @@ defmodule ConfigParserTest do
                   deeper than the first line
                   of a value
               # Did I mention we can indent comments, too?
-      """)
-    line_stream = IO.stream(pid, :line)
-
-    assert ConfigParser.parse_stream(line_stream) == {:ok, %{"All Values Are Strings" => %{"are they treated as numbers?" => "no",
+      """, {:ok, %{"All Values Are Strings" => %{"are they treated as numbers?" => "no",
      "can use the API to get converted values directly" => "true",
      "integers, floats and booleans are held as" => "strings",
      "or this" => "3.14159265359", "values like this" => "1000000"},
@@ -236,7 +195,7 @@ defmodule ConfigParserTest do
      "spaces around the delimiter" => "obviously",
      "spaces in keys" => "allowed", "spaces in values" => "allowed as well",
      "you can also use" => "to delimit keys from values"},
-   "You can use comments" => %{}}}
+   "You can use comments" => %{}}} )
 
   end
 end
