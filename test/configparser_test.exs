@@ -108,32 +108,6 @@ defmodule ConfigParserTest do
       """, {:ok, %{"section" => %{"key" => "value"}}} )
   end
 
-  test "lines starting with a hash are comments" do
-    assert true == ConfigParser.is_comment "# this is a comment\n"
-    assert true == ConfigParser.is_comment "   # this is a comment\n"
-    assert true == ConfigParser.is_comment "#\n"
-  end
-
-  test "lines starting with a semicolon are comments" do
-    assert true == ConfigParser.is_comment "; this is a comment\n"
-    assert true == ConfigParser.is_comment "   ; this is a comment\n"
-    assert true == ConfigParser.is_comment ";\n"
-  end
-
-  test "determines when a line is empty" do
-    assert true == ConfigParser.is_empty("")
-    assert true == ConfigParser.is_empty("\n")
-    assert true == ConfigParser.is_empty(" \n")
-    assert true == ConfigParser.is_empty(" \n ")
-    assert true == ConfigParser.is_empty("\t")
-  end
-
-  test "knows that empty and comment lines can be skipped" do
-    assert true == ConfigParser.can_skip_line(" \n")
-    assert true == ConfigParser.can_skip_line "# this is a comment\n"
-    assert true == ConfigParser.can_skip_line "; this is a comment\n"
-  end
-
   test "parses extended example from python page" do
     check_string("""
       [Simple Values]

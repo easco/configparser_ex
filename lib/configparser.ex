@@ -1,4 +1,37 @@
 defmodule ConfigParser do
+  @moduledoc """
+    This library implements a parser for config files in the style of Windows INI, 
+    as parsed by the Python [configparser](https://docs.python.org/3/library/configparser.html) library.
+  
+    The `ConfigParser` module includes routines that can parse a file, the contents of a string, or from a stream of lines.
+
+    To parse the content of a config file call the `parse_file` function and pass the file's path:
+
+    
+      {:ok, parse_result} = ConfigParser.parse_file("/path/to/file")
+    
+
+    To parse config information out of a string, call the `parse_string` method:
+
+      {:ok, parse_result} = ConfigParser.parse_string(\"\"\"
+        [interesting_config]
+        config_key = some interesting value
+        \"\"\")
+    
+    Given a stream whose elements represent the successive lines of a config file, the library can parse the content of the stream:
+
+      fake_stream = ["[section]", "key1 = value2", "key2:value2"] |> Stream.map(&(&1))
+      {:ok, parse_result} = ConfigParser.parse_stream(fake_stream)
+    
+
+    As mentioned previously the result of doing the parsing is a tuple.  If successful, the first element of the tupe is `:ok` and the second element is the parsed result.
+
+    If the parser encounters an error, then the first part of the tuple will be the atom `:error` and the second element will be a string describing the error that was encountered:
+
+      {:error, "Syntax Error on line 3"}
+    
+  """
+
   defmodule ParseState do
     defstruct line_number: 1,         # What line of the "file" are we parsing
           current_section: nil,       # Section that definitions go into
@@ -72,12 +105,12 @@ defmodule ConfigParser do
 
   # If the parse state indicates an error we simply skip over lines and propogate
   # the error.
-  def parse_line(_line, parse_state = %ParseState{result: {:error, _error_string}}) do
+  defp parse_line(_line, parse_state = %ParseState{result: {:error, _error_string}}) do
     parse_state
   end
 
   # Parse a line while the parse state indicates we're in a good state
-  def parse_line(line, parse_state = %ParseState{result: {:ok, _}}) do
+  defp parse_line(line, parse_state = %ParseState{result: {:ok, _}}) do
     line = strip_inline_comments(line)
 
     # find out how many whitespace characters are on the front of the line
@@ -154,7 +187,7 @@ defmodule ConfigParser do
 
   # Calulate how much whitespace is at the front of the given
   # line.
-  def indent_level(line) do
+  defp indent_level(line) do
     [_whole, spaces | _rest] = Regex.run(~r{(\s*).*}, line)
     spaces = String.replace(spaces, "\t", "  ")
     String.length(spaces)
@@ -162,7 +195,7 @@ defmodule ConfigParser do
 
   # Returns true if the parser can ignore the line passed in.
   # this is done if the line is a comment just whitespace
-  def can_skip_line(line) do
+  defp can_skip_line(line) do
     is_comment(line) || is_empty(line)
   end
 
@@ -170,18 +203,18 @@ defmodule ConfigParser do
   @hash_comment_regex ~r{#.*}
   @semicolon_comment_regex ~r{;.*}
 
-  def is_comment(line) do
+  defp is_comment(line) do
     String.strip(line) =~ @hash_comment_regex || String.strip(line) =~ @semicolon_comment_regex
   end
 
   # returns true if the line contains only whitespace
-  def is_empty(line) do
+  defp is_empty(line) do
     String.strip(line) == ""
   end
 
   # semicolons on a line define the start of a comment.
   # this removes the semicolon and anything following it.
-  def strip_inline_comments(line) do
+  defp strip_inline_comments(line) do
     line_list = String.split(line, ";")
     List.first(line_list)
   end
