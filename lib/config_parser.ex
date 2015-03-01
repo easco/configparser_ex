@@ -47,7 +47,7 @@ defmodule ConfigParser do
                  continuation?: true,
                       last_key: String.strip(key)}
       else
-        new_result = {:error, "A configuration section must be defined before defining configuration values"}
+        new_result = {:error, "A configuration section must be defined before defining configuration values in line #{parse_state.line_number}"}
         %{parse_state | result: new_result}
       end
     end
@@ -65,7 +65,7 @@ defmodule ConfigParser do
     end
   end
 
-  @section_regex ~r{\[([\w\s]+)\]}
+  @section_regex ~r{\[([^\]]+)\]}
   @equals_definition_regex ~r{([^=]+)=(.*)}
   @colon_definition_regex ~r{([^:]+):(.*)}
   @value_like_regex ~r{\s*(\S.*)}
@@ -127,9 +127,16 @@ defmodule ConfigParser do
 
   # Accepts a file path.  Attempts to open the line and parse its content 
   # as a config file.
-  def parse(config_file_path) do
+  def parse_file(config_file_path) do
     file_stream = File.stream!(config_file_path, [], :line)
     parse_stream(file_stream)
+  end
+
+  # Parse a string as if it was the content of a config file
+  def parse_string(config_string) do
+    {:ok, pid} = StringIO.open(config_string)
+    line_stream = IO.stream(pid, :line)
+    parse_stream(line_stream)
   end
 
   # Accepts a stream whose elements should be strings representing the

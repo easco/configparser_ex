@@ -2,10 +2,7 @@ defmodule ConfigParserTest do
   use ExUnit.Case
 
   def check_string(string, against_value) do
-    {:ok, pid} = StringIO.open(string)
-    line_stream = IO.stream(pid, :line)
-
-    assert against_value == ConfigParser.parse_stream(line_stream)
+    assert against_value == ConfigParser.parse_string(string)
   end
 
   test "parses an empty file" do
