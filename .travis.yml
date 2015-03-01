@@ -10,5 +10,5 @@ before_install:
   - mix local.hex --force
 script: mix test
 notifications:
-  recipients:
+  email:
     - easco@mac.com
