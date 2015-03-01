@@ -32,7 +32,7 @@ defmodule ConfigParser.Mixfile do
 
   defp package do
     [ contributors: ["Scott Thompson"],
-      files: ["mix.exs", "lib", ".gitignore", "LICENSE*", "README*"],
+      files: ["mix.exs", "lib", "LICENSE*", "README*"],
       licenses: ["bsd"],
       links: %{"GitHub" => "https://github.com/easco/configparser_ex"}
     ]
