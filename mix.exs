@@ -2,8 +2,8 @@ defmodule ConfigParser.Mixfile do
   use Mix.Project
 
   def project do
-    [app: :configparser,
-     version: "1.0.0",
+    [app: :configparser_ex,
+     version: "0.1.0",
      elixir: "~> 1.0",
      description: "A module that parses INI-like files. Similar, but not identical, to the Python configparser package.",
      package: package,
