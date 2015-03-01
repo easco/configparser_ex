@@ -125,22 +125,28 @@ defmodule ConfigParser do
     end # continuation if
   end
 
-  # Accepts a file path.  Attempts to open the line and parse its content 
-  # as a config file.
+  @doc """
+    Accepts `config_file_path`, a file system path to a config file.
+    Attempts to opens and parses the contents of that file.
+  """
   def parse_file(config_file_path) do
     file_stream = File.stream!(config_file_path, [], :line)
     parse_stream(file_stream)
   end
 
-  # Parse a string as if it was the content of a config file
+  @doc """
+    Parse a string as if it was the content of a config file.
+  """
   def parse_string(config_string) do
     {:ok, pid} = StringIO.open(config_string)
     line_stream = IO.stream(pid, :line)
     parse_stream(line_stream)
   end
 
-  # Accepts a stream whose elements should be strings representing the
-  # individual lines of a config file.
+  @doc """
+    Parses a stream whose elements should be strings representing the
+    individual lines of a config file.
+  """
   def parse_stream(line_stream) do
     %ParseState{result: result} = Enum.reduce(line_stream, %ParseState{}, &parse_line/2)
     result
