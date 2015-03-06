@@ -1,4 +1,6 @@
  defmodule ConfigParser.ParseState do
+    @moduledoc false
+
     defstruct line_number: 1,         # What line of the "file" are we parsing
           current_section: nil,       # Section that definitions go into
               last_indent: 0,         # The amount of whitespace on the last line

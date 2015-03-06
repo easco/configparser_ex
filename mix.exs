@@ -3,9 +3,11 @@ defmodule ConfigParser.Mixfile do
 
   def project do
     [app: :configparser_ex,
-     version: "0.1.1",
+     version: "0.2.0",
+     name: "ConfigParser for Elixir",
+     source_url: "https://github.com/easco/configparser_ex",
      elixir: "~> 1.0",
-     description: "A module that parses INI-like files. Similar, but not identical, to the Python configparser package.",
+     description: "A module that parses INI-like files. Not unlike Python configparser package.",
      package: package,
      deps: deps]
   end
@@ -27,7 +29,8 @@ defmodule ConfigParser.Mixfile do
   #
   # Type `mix help deps` for more examples and options
   defp deps do
-    []
+    [{:earmark, "~> 0.1", only: :dev},
+     {:ex_doc, "~> 0.7", only: :dev}]
   end
 
   defp package do
