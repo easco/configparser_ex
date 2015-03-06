@@ -108,6 +108,99 @@ defmodule ConfigParserTest do
       """, {:ok, %{"section" => %{"key" => "value"}}} )
   end
 
+  test "extracts a list of sections from parsed config data" do
+      {:ok, parse_result} = ConfigParser.parse_string("""
+        [first_section]
+        boring = value
+        [second_section]
+        someother_key = and_value
+        """)
+      sorted_sections = Enum.sort(ConfigParser.sections(parse_result), &(&1 < &2))
+      assert sorted_sections == ["first_section", "second_section"]
+  end
+
+  test "determines if a particular section is found in the parsed results" do
+      {:ok, parse_result} = ConfigParser.parse_string("""
+        [first_section]
+        boring = value
+        [second_section]
+        someother_key = and_value
+        """)
+
+      assert true == ConfigParser.has_section?(parse_result, "first_section")
+      assert false == ConfigParser.has_section?(parse_result, "snarfblat")
+  end
+
+  test "returns a list of the options defined in a particular section" do
+      {:ok, parse_result} = ConfigParser.parse_string("""
+        [section]
+        one = for the money
+        two = for the show
+        three = to get ready
+        """)
+
+      sorted_options = Enum.sort(ConfigParser.options(parse_result, "section"), &(&1 < &2))
+      assert sorted_options == ["one", "three", "two"]
+
+      assert nil == ConfigParser.options(parse_result, "non-existant section")
+  end
+
+  test "determines if a particuliar option is available in a section" do
+      {:ok, parse_result} = ConfigParser.parse_string("""
+        [section]
+        one = for the money
+        two = for the show
+        three = to get ready
+        """)
+
+      assert ConfigParser.has_option?(parse_result, "section", "one") == true
+      assert ConfigParser.has_option?(parse_result, "section", "florp") == false
+  end
+
+  test "returns nil if asked for a value in a section that doesn't exist" do
+      {:ok, parse_result} = ConfigParser.parse_string("""
+        [section]
+        one = for the money
+        """)
+
+      assert ConfigParser.get(parse_result, "non-existant", "one") == nil
+  end
+
+  test "returns the value of a particular option when no fancy options are provided" do
+      {:ok, parse_result} = ConfigParser.parse_string("""
+        [section]
+        one = for the money
+        """)
+
+      assert ConfigParser.get(parse_result, "section", "one") == "for the money"
+  end
+
+  test "allows the :vars option to override definitions from the parse data" do
+      {:ok, parse_result} = ConfigParser.parse_string("""
+        [section]
+        one = for the money
+        """)
+
+      assert ConfigParser.get(parse_result, "section", "one", vars: %{
+          "one" => "is the loneliest number"
+        }) == "is the loneliest number"
+
+      assert ConfigParser.get(parse_result, "section", "one", vars: %{
+          "one" => nil
+        }) == nil
+  end
+
+  test "returns the fallback value if the value can't be found otherwise" do
+      {:ok, parse_result} = ConfigParser.parse_string("""
+        [section]
+        one = for the money
+        """)
+
+      assert ConfigParser.get(parse_result, "non-existant", "_", fallback: "None") == "None"
+      assert ConfigParser.get(parse_result, "section", "non-existant", fallback: "None") == "None"
+  end
+
+
   test "parses extended example from python page" do
     check_string("""
       [Simple Values]
