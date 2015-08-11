@@ -4,6 +4,14 @@ ConfigParser
 
 This library implements a parser for config files in the style of Windows INI, as parsed by the Python [configparser](https://docs.python.org/3/library/configparser.html) library.
 
+---
+
+### Note : Mix Config
+
+This library is intended for compatibility in environments that are already using config file in the format described above. If you are working in a pure Elixir environment, please consider using the `Mix.Config` which is part of the core library and provides similar functionality.
+
+---
+
 Basic config files look like this:
 
 ```
