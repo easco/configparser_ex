@@ -3,7 +3,7 @@ defmodule ConfigParser.Mixfile do
 
   def project do
     [app: :configparser_ex,
-     version: "0.2.0",
+     version: "0.2.1",
      name: "ConfigParser for Elixir",
      source_url: "https://github.com/easco/configparser_ex",
      elixir: "~> 1.0",
