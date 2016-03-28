@@ -200,6 +200,22 @@ defmodule ConfigParserTest do
       assert ConfigParser.get(parse_result, "section", "non-existant", fallback: "None") == "None"
   end
 
+  test "correctly handles the case where a section is repeated or reopened" do
+    {:ok, parse_result} = ConfigParser.parse_string("""
+      [Simple Values]
+      key=value
+      spaces in keys=allowed
+
+      [Simple Values]
+      spaces in values=allowed as well
+      spaces around the delimiter = obviously
+      you can also use : to delimit keys from values
+    """)
+
+    assert ConfigParser.get(parse_result, "Simple Values", "key") == "value"
+    assert ConfigParser.get(parse_result, "Simple Values", "spaces in values") == "allowed as well"
+  end
+
 
   test "parses extended example from python page" do
     check_string("""

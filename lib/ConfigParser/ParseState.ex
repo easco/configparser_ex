@@ -14,9 +14,15 @@
 
       # Only add a new section if it's not already there
       section_key = String.strip(new_section)
-      unless Map.has_key?(section_map, section_key) do
-        new_result = {:ok, Map.put(section_map, section_key, %{}) }
-      end
+
+      new_result = 
+        if Map.has_key?(section_map, section_key) do
+          # don't change the result if they section already exists
+          parse_state.result
+        else
+          # add the section as an empty map if it doesn't exist
+          {:ok, Map.put(section_map, section_key, %{}) }
+        end
 
       # next line cannot be a continuation 
       %{parse_state | current_section: section_key, 
@@ -33,11 +39,12 @@
         value_map = section_map[parse_state.current_section]
 
         # create a new set of values by adding the key/value pair passed in
-        if value == nil do
-          new_values = Map.put(value_map, String.strip(key), nil)
-        else
-          new_values = Map.put(value_map, String.strip(key), String.strip(value))
-        end
+        new_values =
+          if value == nil do
+            Map.put(value_map, String.strip(key), nil)
+          else
+            Map.put(value_map, String.strip(key), String.strip(value))
+          end
 
         # create a new result replacing the current section with thenew values
         new_result = {:ok, Map.put(section_map, parse_state.current_section, new_values)}
