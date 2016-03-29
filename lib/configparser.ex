@@ -90,17 +90,16 @@ defmodule ConfigParser do
   end
 
   @doc """
-    Return the value for the option with the given `key`.
+    Return the value for the configuration option with the given `key`.
 
-    You can change the way values are looked up using the `options` map.
+    You can change the way values are looked up using the `search_options` map.
     The following keys are recognized:
 
     * `:raw` - reserved for future enhancements
     * `:vars` - a map of keys and values.
-    * `:fallback` - a value to return if the option given by option_key is not found
+    * `:fallback` - a value to return if the option given by `key` is not found
 
-
-    The routine searches for a value with the given key in the `:vars` map
+    The routine searches for a value with the given `key` in the `:vars` map
     if provided, then in the given section from the parse result.
 
     If no value is found, and the `options` map has a `:fallback` key, the
@@ -108,16 +107,16 @@ defmodule ConfigParser do
 
     If all else fails, the routine returns `nil`
   """
-  def get(parser_results, section, key, options \\ %{}) do
+  def get(parser_results, section, key, search_options \\ %{}) do
     cond do
-      options[:vars] && Map.has_key?(options[:vars], key) ->
-        options[:vars][key]
+      search_options[:vars] && Map.has_key?(search_options[:vars], key) ->
+        search_options[:vars][key]
 
       has_option?(parser_results, section, key) ->
         parser_results[section][key]
 
-      options[:fallback] ->
-        options[:fallback]
+      search_options[:fallback] ->
+        search_options[:fallback]
 
       true ->
         nil
