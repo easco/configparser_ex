@@ -15,7 +15,7 @@
       # Only add a new section if it's not already there
       section_key = String.strip(new_section)
 
-      new_result = 
+      new_result =
         if Map.has_key?(section_map, section_key) do
           # don't change the result if they section already exists
           parse_state.result
@@ -24,9 +24,9 @@
           {:ok, Map.put(section_map, section_key, %{}) }
         end
 
-      # next line cannot be a continuation 
-      %{parse_state | current_section: section_key, 
-                               result: new_result, 
+      # next line cannot be a continuation
+      %{parse_state | current_section: section_key,
+                               result: new_result,
                         continuation?: false,
                              last_key: nil}
     end
@@ -51,7 +51,7 @@
 
         # The next line could be a continuation of this value so set continuation to true
         # and store the key that we're defining now.
-        %{parse_state | result: new_result, 
+        %{parse_state | result: new_result,
                  continuation?: true,
                       last_key: String.strip(key)}
       else

@@ -2,16 +2,16 @@ defmodule ConfigParser do
   alias ConfigParser.ParseState, as: ParseState
 
   @moduledoc """
-    This library implements a parser for config files in the style of Windows INI, 
+    This library implements a parser for config files in the style of Windows INI,
     as parsed by the Python [configparser](https://docs.python.org/3/library/configparser.html) library.
-  
+
     The `ConfigParser` module includes routines that can parse a file, the contents of a string, or from a stream of lines.
 
     To parse the content of a config file call the `parse_file` function and pass the file's path:
 
-    
+
       {:ok, parse_result} = ConfigParser.parse_file("/path/to/file")
-    
+
 
     To parse config information out of a string, call the `parse_string` method:
 
@@ -19,21 +19,21 @@ defmodule ConfigParser do
         [interesting_config]
         config_key = some interesting value
         \"\"\")
-    
+
     Given a stream whose elements represent the successive lines of a config file, the library can parse the content of the stream:
 
-      fake_stream = ["[section]", "key1 = value2", "key2:value2"] 
+      fake_stream = ["[section]", "key1 = value2", "key2:value2"]
         |> Stream.map(&(&1))
 
       {:ok, parse_result} = ConfigParser.parse_stream(fake_stream)
-    
+
 
     As mentioned previously the result of doing the parsing is a tuple.  If successful, the first element of the tupe is `:ok` and the second element is the parsed result.
 
     If the parser encounters an error, then the first part of the tuple will be the atom `:error` and the second element will be a string describing the error that was encountered:
 
       {:error, "Syntax Error on line 3"}
-    
+
   """
 
   @doc """
@@ -78,8 +78,8 @@ defmodule ConfigParser do
   end
 
   @doc """
-    return a map with the options in the given section. If the 
-    section is not found, returns an empty map
+    return a List with the options, the keys, defined in the given section. If the
+    section is not found, returns an empty List
   """
   def options(parser_results, in_section) do
     if has_section?(parser_results, in_section) do
@@ -99,7 +99,7 @@ defmodule ConfigParser do
     * `:vars` - a map of keys and values.
     * `:fallback` - a value to return if the option given by option_key is not found
 
-    
+
     The routine searches for a value with the given key in the `:vars` map
     if provided, then in the given section from the parse result.
 
@@ -167,7 +167,7 @@ defmodule ConfigParser do
   """
   def getboolean(parser_results, section, key, options \\ %{}) do
     string_value = get(parser_results, section, key, options)
-    
+
     case String.downcase(string_value) do
       "true" -> true
       "1" -> true
@@ -214,7 +214,7 @@ defmodule ConfigParser do
     # find out how many whitespace characters are on the front of the line
     indent_level = indent_level(line)
 
-    if parse_state.continuation? 
+    if parse_state.continuation?
        && indent_level > parse_state.last_indent
        && (match = Regex.run(@value_like_regex, line)) do
 
