@@ -126,7 +126,7 @@ defmodule ConfigParser do
     See `ConfigParser.get` for explainations of the options.
   """
   def getint(parser_results, section, key, search_options \\ %{}) do
-    value = get(parser_results, section, key, options)
+    value = get(parser_results, section, key, search_options)
 
     if is_binary(value) do
       String.to_integer(value)
@@ -142,7 +142,7 @@ defmodule ConfigParser do
     See `ConfigParser.get` for explainations of the options.
   """
   def getfloat(parser_results, section, key, search_options \\ %{}) do
-    value = get(parser_results, section, key, options)
+    value = get(parser_results, section, key, search_options)
 
     if is_binary(value) do
       String.to_float(value)
@@ -161,7 +161,7 @@ defmodule ConfigParser do
     See `ConfigParser.get` for explainations of the options.
   """
   def getboolean(parser_results, section, key, search_options \\ %{}) do
-    string_value = get(parser_results, section, key, options)
+    string_value = get(parser_results, section, key, search_options)
 
     case String.downcase(string_value) do
       "true" -> true
