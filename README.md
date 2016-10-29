@@ -117,6 +117,6 @@ This library is primarily intended to provide backward-compatibility in environm
 
 This library currently returns the parsed result as a raw data structure.
 
-It does not support the value interpolation in the Python library and does not implement the DEFAULT section as described in the Python documentation.  
+It does not support the value interpolation in the Python library and does not implement the DEFAULT section as described in the Python documentation.
 
 This library does not support the Python ConfigParser's customization features.

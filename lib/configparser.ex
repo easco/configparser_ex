@@ -9,9 +9,7 @@ defmodule ConfigParser do
 
     To parse the content of a config file call the `parse_file` function and pass the file's path:
 
-
       {:ok, parse_result} = ConfigParser.parse_file("/path/to/file")
-
 
     To parse config information out of a string, call the `parse_string` method:
 
@@ -27,13 +25,11 @@ defmodule ConfigParser do
 
       {:ok, parse_result} = ConfigParser.parse_stream(fake_stream)
 
-
-    As mentioned previously the result of doing the parsing is a tuple.  If successful, the first element of the tupe is `:ok` and the second element is the parsed result.
+    As shown, the result of doing the parsing is a tuple. If successful, the first element of the tupe is `:ok` and the second element is the parsed result.
 
     If the parser encounters an error, then the first part of the tuple will be the atom `:error` and the second element will be a string describing the error that was encountered:
 
       {:error, "Syntax Error on line 3"}
-
   """
 
   @doc """
@@ -71,14 +67,14 @@ defmodule ConfigParser do
   end
 
   @doc """
-    true if the named section is found in the config parser results
+    Returns `true` if the named section is found in the config parser results
   """
   def has_section?(parser_results, which_section) do
     nil != Enum.find(sections(parser_results), &(&1 == which_section))
   end
 
   @doc """
-    return a List with the options, the keys, defined in the given section. If the
+    Returns a List with the options, the keys, defined in the given section. If the
     section is not found, returns an empty List
   """
   def options(parser_results, in_section) do
@@ -129,7 +125,7 @@ defmodule ConfigParser do
 
     See `ConfigParser.get` for explainations of the options.
   """
-  def getint(parser_results, section, key, options \\ %{}) do
+  def getint(parser_results, section, key, search_options \\ %{}) do
     value = get(parser_results, section, key, options)
 
     if is_binary(value) do
@@ -145,7 +141,7 @@ defmodule ConfigParser do
 
     See `ConfigParser.get` for explainations of the options.
   """
-  def getfloat(parser_results, section, key, options \\ %{}) do
+  def getfloat(parser_results, section, key, search_options \\ %{}) do
     value = get(parser_results, section, key, options)
 
     if is_binary(value) do
@@ -164,7 +160,7 @@ defmodule ConfigParser do
 
     See `ConfigParser.get` for explainations of the options.
   """
-  def getboolean(parser_results, section, key, options \\ %{}) do
+  def getboolean(parser_results, section, key, search_options \\ %{}) do
     string_value = get(parser_results, section, key, options)
 
     case String.downcase(string_value) do
