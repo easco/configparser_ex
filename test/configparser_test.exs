@@ -244,6 +244,9 @@ defmodule ConfigParserTest do
       [You can use comments]
       # like this
       ; or this
+          # and also this
+      but not # like this
+      and also ; not this
 
       # By default only in an empty line.
       # Inline comments can be harmful because they prevent users
@@ -275,7 +278,9 @@ defmodule ConfigParserTest do
      "spaces around the delimiter" => "obviously",
      "spaces in keys" => "allowed", "spaces in values" => "allowed as well",
      "you can also use" => "to delimit keys from values"},
-   "You can use comments" => %{}}} )
+   "You can use comments" => %{
+     "but not # like this" => nil,
+     "and also" => nil}}} )
 
   end
 end
