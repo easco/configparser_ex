@@ -266,8 +266,8 @@ defmodule ConfigParser do
   end
 
   # Returns true if the line appears to be a comment
-  @hash_comment_regex ~r{#.*}
-  @semicolon_comment_regex ~r{;.*}
+  @hash_comment_regex ~r{^#.*}
+  @semicolon_comment_regex ~r{^;.*}
 
   defp is_comment(line) do
     String.strip(line) =~ @hash_comment_regex || String.strip(line) =~ @semicolon_comment_regex
