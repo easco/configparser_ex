@@ -3,13 +3,13 @@ defmodule ConfigParser.Mixfile do
 
   def project do
     [app: :configparser_ex,
-     version: "0.2.1",
+     version: "1.0.0",
      name: "ConfigParser for Elixir",
      source_url: "https://github.com/easco/configparser_ex",
      elixir: "~> 1.0",
-     description: "A module that parses INI-like files. Not unlike Python configparser package.",
-     package: package,
-     deps: deps]
+     description: "A module that parses INI-like files. Not unlike the Python configparser package.",
+     package: package(),
+     deps: deps()]
   end
 
   # Configuration for the OTP application
@@ -34,7 +34,7 @@ defmodule ConfigParser.Mixfile do
   end
 
   defp package do
-    [ contributors: ["Scott Thompson"],
+    [ maintainers: ["Scott Thompson"],
       files: ["mix.exs", "lib", "LICENSE*", "README*"],
       licenses: ["bsd"],
       links: %{"GitHub" => "https://github.com/easco/configparser_ex"}
