@@ -1,4 +1,8 @@
 
+1.0.1 - Repalced calls to deprecated String.strip with String.trim
+
+1.0.0 - Changed the way comments were parsed to make it more compatible with other libraries
+
 0.2.1 - Small code changes to address a compiler warning from Elixir 1.2.3
 
 0.1.0

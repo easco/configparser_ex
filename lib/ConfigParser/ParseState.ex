@@ -13,7 +13,7 @@
       {:ok, section_map} = parse_state.result
 
       # Only add a new section if it's not already there
-      section_key = String.strip(new_section)
+      section_key = String.trim(new_section)
 
       new_result =
         if Map.has_key?(section_map, section_key) do
@@ -41,9 +41,9 @@
         # create a new set of values by adding the key/value pair passed in
         new_values =
           if value == nil do
-            Map.put(value_map, String.strip(key), nil)
+            Map.put(value_map, String.trim(key), nil)
           else
-            Map.put(value_map, String.strip(key), String.strip(value))
+            Map.put(value_map, String.trim(key), String.trim(value))
           end
 
         # create a new result replacing the current section with thenew values
@@ -53,7 +53,7 @@
         # and store the key that we're defining now.
         %{parse_state | result: new_result,
                  continuation?: true,
-                      last_key: String.strip(key)}
+                      last_key: String.trim(key)}
       else
         new_result = {:error, "A configuration section must be defined before defining configuration values in line #{parse_state.line_number}"}
         %{parse_state | result: new_result}
