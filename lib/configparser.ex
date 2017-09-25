@@ -214,7 +214,7 @@ defmodule ConfigParser do
        && (match = Regex.run(@value_like_regex, line)) do
 
       # note that we do not increase the "last indent"
-      %{ParseState.append_continuation(parse_state, String.strip(line)) | line_number: parse_state.line_number + 1, continuation?: true}
+      %{ParseState.append_continuation(parse_state, String.trim(line)) | line_number: parse_state.line_number + 1, continuation?: true}
     else
       cond do
         # if we can skip this line (it's empty or a comment) then simply advance the line number
@@ -270,12 +270,12 @@ defmodule ConfigParser do
   @semicolon_comment_regex ~r{^;.*}
 
   defp is_comment(line) do
-    String.strip(line) =~ @hash_comment_regex || String.strip(line) =~ @semicolon_comment_regex
+    String.trim(line) =~ @hash_comment_regex || String.trim(line) =~ @semicolon_comment_regex
   end
 
   # returns true if the line contains only whitespace
   defp is_empty(line) do
-    String.strip(line) == ""
+    String.trim(line) == ""
   end
 
   # semicolons on a line define the start of a comment.

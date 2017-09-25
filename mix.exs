@@ -6,7 +6,7 @@ defmodule ConfigParser.Mixfile do
      version: "1.0.1",
      name: "ConfigParser for Elixir",
      source_url: "https://github.com/easco/configparser_ex",
-     elixir: "~> 1.0",
+     elixir: ">= 1.3.0",
      description: "A module that parses INI-like files. Not unlike the Python configparser package.",
      package: package(),
      deps: deps()]
