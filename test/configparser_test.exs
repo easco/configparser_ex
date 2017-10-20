@@ -108,6 +108,13 @@ defmodule ConfigParserTest do
       """, {:ok, %{"section" => %{"key" => "value"}}} )
   end
 
+  test "close StringIO after read" do
+    process_count_before = Process.list |> length
+    ConfigParser.parse_string("test")
+    process_count_after = Process.list |> length
+    assert process_count_before == process_count_after
+  end
+
   test "extracts a list of sections from parsed config data" do
       {:ok, parse_result} = ConfigParser.parse_string("""
         [first_section]
