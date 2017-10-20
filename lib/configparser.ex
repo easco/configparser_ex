@@ -47,7 +47,9 @@ defmodule ConfigParser do
   def parse_string(config_string) do
     {:ok, pid} = StringIO.open(config_string)
     line_stream = IO.stream(pid, :line)
-    parse_stream(line_stream)
+    result = parse_stream(line_stream)
+    StringIO.close(pid)
+    result
   end
 
   @doc """
