@@ -65,7 +65,7 @@ this_key_has_the_empty_string_as_a_value =
 Comments
 -----------
 
-The config file can contiain comments:
+The config file can contain comments:
 
 ```
 # comments can begin with a hash or number sign a the beginning
