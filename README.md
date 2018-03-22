@@ -123,6 +123,22 @@ If the parser encounters an error, then the first part of the tuple will be the 
 ```
 {:error, "Syntax Error on line 3"}
 ```
+    ---
+
+Parser Options
+--------------
+
+Starting with Version 3 of the library, it is possible to pass options to the parser:
+
+|  Option              | Value            | Effect |
+|----------------------|-----------------|--------------------------------------------------------------------------------------------------------------------------------------|
+| `join_continuations` | `:with_newline` | The parser joins the lines of multi-line values with a newline. This is the default and matches the behavior of Python ConfigParser. |
+| `join_continuations` | `:with_space`   | The parser joins the lines of multi-line values with a space. This is the default behavior of the library prior to version 3.        |
+
+You may add options as keyword arguments to the end of the `parse_file`, `parse_string`, or `parse_stream` functions
+
+    {:ok, parse_result} = ConfigParser.parse_file("/path/to/file", join_continutions: :with_newline)
+
 
 Not Implemented
 ---------------
