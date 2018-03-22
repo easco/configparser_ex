@@ -1,12 +1,20 @@
  defmodule ConfigParser.ParseState do
     @moduledoc false
 
-    defstruct line_number: 1,         # What line of the "file" are we parsing
-          current_section: nil,       # Section that definitions go into
-              last_indent: 0,         # The amount of whitespace on the last line
-            continuation?: false,     # Could the line being parsed be a coninuation
-                 last_key: nil,       # If this is a continuation, which key would it continue
-                   result: {:ok, %{}} # The result as it is being built.
+    @default_options %{
+      join_continuations: :with_newline
+    }
+
+    defstruct line_number: 1,               # What line of the "file" are we parsing
+          current_section: nil,             # Section that definitions go into
+              last_indent: 0,               # The amount of whitespace on the last line
+            continuation?: false,           # Could the line being parsed be a coninuation
+                 last_key: nil,             # If this is a continuation, which key would it continue
+                   result: {:ok, %{}},      # The result as it is being built.
+                  options: @default_options # options used when parsing the config
+    alias __MODULE__
+
+    def default_options, do: @default_options
 
     def begin_section(parse_state, new_section) do
       # Create a new result, based on the old, with the new section added
@@ -60,15 +68,23 @@
       end
     end
 
-    def append_continuation(parse_state, continuation_value) do
+    def append_continuation(%ParseState{options: options} = parse_state, continuation_value) do
       {:ok, section_map} = parse_state.result
 
       # pull the values out for the section that's currently being built
       value_map = section_map[parse_state.current_section]
 
       # create a new set of values by adding the key/value pair passed in
-      new_value = "#{value_map[parse_state.last_key]} #{continuation_value}"
+      new_value = append_continuation(options, value_map[parse_state.last_key], continuation_value)
 
       define_config(parse_state, parse_state.last_key, new_value)
+    end
+
+    defp append_continuation(%{join_continuations: :with_newline}, value, continuation) do 
+      "#{value}\n#{continuation}"
+    end
+
+    defp append_continuation(%{join_continuations: :with_space}, value, continuation) do
+      "#{value} #{continuation}"
     end
   end

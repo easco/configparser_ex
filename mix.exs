@@ -3,7 +3,7 @@ defmodule ConfigParser.Mixfile do
 
   def project do
     [app: :configparser_ex,
-     version: "2.0.1",
+     version: "3.0.0",
      name: "ConfigParser for Elixir",
      source_url: "https://github.com/easco/configparser_ex",
      elixir: ">= 1.3.0",
@@ -29,8 +29,8 @@ defmodule ConfigParser.Mixfile do
   #
   # Type `mix help deps` for more examples and options
   defp deps do
-    [{:earmark, "~> 0.2", only: :dev},
-     {:ex_doc, "~> 0.11", only: :dev}]
+    [{:earmark, "~> 1.2", only: :dev},
+     {:ex_doc, "~> 0.18", only: :dev}]
   end
 
   defp package do

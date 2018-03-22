@@ -74,7 +74,7 @@ defmodule ConfigParserTest do
       [section]
       you can also use : to delimit keys from values
           and add a continuation
-      """, {:ok, %{"section" => %{"you can also use" => "to delimit keys from values and add a continuation"}}} )
+      """, {:ok, %{"section" => %{"you can also use" => "to delimit keys from values\nand add a continuation"}}} )
   end
 
   test "allows a multi-line continuation" do
@@ -83,7 +83,7 @@ defmodule ConfigParserTest do
       you can also use : to delimit keys 
           from values
           and add a continuation
-      """, {:ok, %{"section" => %{"you can also use" => "to delimit keys from values and add a continuation"}}} )
+      """, {:ok, %{"section" => %{"you can also use" => "to delimit keys\nfrom values\nand add a continuation"}}} )
   end
 
   test "allows empty string thing" do
@@ -223,6 +223,25 @@ defmodule ConfigParserTest do
     assert ConfigParser.get(parse_result, "Simple Values", "spaces in values") == "allowed as well"
   end
 
+  describe "parsing options" do
+    test "errors out with unrecognized options" do
+      assert {:error, _} = ConfigParser.parse_string("""
+        [does not matter]
+        this = is_bogus
+      """, unrecognized_option: "whatever")
+    end
+    
+    test "parses multiline_values when asked for spaces" do
+
+      {:ok, parse_result} = ConfigParser.parse_string("""
+        [section]
+        you can also use : to delimit keys from values
+            and add a continuation
+        """, join_continuations: :with_space)
+
+      assert parse_result == %{"section" => %{"you can also use" => "to delimit keys from values and add a continuation"}}
+    end
+  end
 
   test "parses extended example from python page" do
     check_string("""
@@ -274,12 +293,12 @@ defmodule ConfigParserTest do
      "can use the API to get converted values directly" => "true",
      "integers, floats and booleans are held as" => "strings",
      "or this" => "3.14159265359", "values like this" => "1000000"},
-   "Multiline Values" => %{"chorus" => "I'm a lumberjack, and I'm okay, I sleep all night and I work all day"},
+   "Multiline Values" => %{"chorus" => "I'm a lumberjack, and I'm okay,\nI sleep all night and I work all day"},
    "No Values" => %{"empty string value here" => "",
      "key_without_value" => nil},
    "Sections Can Be Indented" => %{"can_values_be_as_well" => "True",
      "does_that_mean_anything_special" => "False",
-     "multiline_values" => "are handled just fine as long as they are indented deeper than the first line of a value",
+     "multiline_values" => "are\nhandled just fine as\nlong as they are indented\ndeeper than the first line\nof a value",
      "purpose" => "formatting for readability"},
    "Simple Values" => %{"key" => "value",
      "spaces around the delimiter" => "obviously",

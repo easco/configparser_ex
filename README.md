@@ -6,9 +6,23 @@ This library implements a parser for config files in the style of Windows INI, a
 
 ---
 
-### Note : Mix Config
+### A note about Mix.Config
 
-This library is intended for compatibility in environments that are already using config file in the format described above. If you are working in a pure Elixir environment, please consider using the `Mix.Config` which is part of the core library and provides similar functionality.
+This library is intended for compatibility in environments that are already
+using config files in the format described above. If you are working in a
+pure Elixir environment, please consider using `Mix.Config` insead as it is
+part of the core library and provides similar functionality.
+
+---
+
+> **Release Notes**
+>
+> Starting with Version 3.0, the way the library handles multi-line values has
+> changed! Prior versions of the library would join multi-line values with a
+> single space. Now it joins them with a newline character. This change
+> replicates the behavior of the Python ConfigParser library. 
+> The release now includes parser options and the `join_continuations` option
+> with the value `:with_space` will revert the library to its prior behavior.
 
 ---
 

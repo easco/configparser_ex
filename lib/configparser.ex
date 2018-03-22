@@ -2,8 +2,19 @@ defmodule ConfigParser do
   alias ConfigParser.ParseState, as: ParseState
 
   @moduledoc """
-    This library implements a parser for config files in the style of Windows INI,
+    The ConfigParser library implements a parser for config files in the style of Windows INI,
     as parsed by the Python [configparser](https://docs.python.org/3/library/configparser.html) library.
+
+    A note about `Mix.Config`
+    ---------------------------
+
+    This library is intended for compatibility in environments that are already
+    using config files in the format described above. If you are working in a
+    pure Elixir environment, please consider using `Mix.Config` insead as it is
+    part of the core library and provides similar functionality.
+
+    Basic Usage
+    -----------
 
     The `ConfigParser` module includes routines that can parse a file, the contents of a string, or from a stream of lines.
 
@@ -30,24 +41,40 @@ defmodule ConfigParser do
     If the parser encounters an error, then the first part of the tuple will be the atom `:error` and the second element will be a string describing the error that was encountered:
 
       {:error, "Syntax Error on line 3"}
+
+    ---
+
+    Parser Options
+    --------------
+
+    Starting with Version 3 of the library, it is possible to pass options to the parser:
+
+    |  Option              | Value            | Effect |
+    |----------------------|-----------------|--------------------------------------------------------------------------------------------------------------------------------------|
+    | `join_continuations` | `:with_newline` | The parser joins the lines of multi-line values with a newline. This is the default and matches the behavior of Python ConfigParser. |
+    | `join_continuations` | `:with_space`   | The parser joins the lines of multi-line values with a space. This is the default behavior of the library prior to version 3.        |
+
+    You may add options as keyword arguments to the end of the `parse_file`, `parse_string`, or `parse_stream` functions
+
+        {:ok, parse_result} = ConfigParser.parse_file("/path/to/file", join_continutions: :with_newline)
   """
 
   @doc """
     Accepts `config_file_path`, a file system path to a config file.
     Attempts to opens and parses the contents of that file.
   """
-  def parse_file(config_file_path) do
+  def parse_file(config_file_path, parser_options \\ []) do
     file_stream = File.stream!(config_file_path, [], :line)
-    parse_stream(file_stream)
+    parse_stream(file_stream, parser_options)
   end
 
   @doc """
     Parse a string as if it was the content of a config file.
   """
-  def parse_string(config_string) do
+  def parse_string(config_string, parser_options \\ []) do
     {:ok, pid} = StringIO.open(config_string)
     line_stream = IO.stream(pid, :line)
-    result = parse_stream(line_stream)
+    result = parse_stream(line_stream, parser_options)
     StringIO.close(pid)
     result
   end
@@ -56,8 +83,16 @@ defmodule ConfigParser do
     Parses a stream whose elements should be strings representing the
     individual lines of a config file.
   """
-  def parse_stream(line_stream) do
-    %ParseState{result: result} = Enum.reduce(line_stream, %ParseState{}, &parse_line/2)
+  def parse_stream(line_stream, parser_options \\ []) do
+    options_map = options_to_map(parser_options)
+
+    result = with {:ok, ^options_map} <- validate_options(options_map) do
+      %ParseState{result: parse_result} = Enum.reduce(line_stream, %ParseState{options: options_map}, &parse_line/2)
+      parse_result
+    else
+      error -> error
+    end
+
     result
   end
 
@@ -285,5 +320,43 @@ defmodule ConfigParser do
   defp strip_inline_comments(line) do
     line_list = String.split(line, ";")
     List.first(line_list)
+  end
+
+  defp options_to_map([]), do: ParseState.default_options()
+  defp options_to_map(options) when is_list(options), do: Enum.into(options, %{})
+
+  defp validate_options(%{} = options_map) do
+    Enum.reduce(options_map, {:ok, options_map}, &option_reducer/2)
+  end
+
+  # validate an individual option pair when all prior options have been valid
+  defp option_reducer(pair, {:ok, %{}} = result) do
+      with {:ok, ^pair} <- validate_option(pair) do
+        result
+      else
+        {:error, option_error} -> {:error, [option_error]}
+      end
+  end
+
+  # validate an individual option pair when an error has already been encountered
+  # accumulates a list of errors
+  defp option_reducer(pair, {:error, errors_list} = result) do
+      with {:ok, ^pair} <- validate_option(pair) do
+        result
+      else
+        {:error, option_error} -> {:error, [option_error | errors_list]}
+      end
+  end
+
+  defp validate_option({:join_continuations,  value} = pair) do
+    if value == :with_newline || value == :with_space do
+      {:ok, pair}
+    else
+      {:error, "The value for the join_continuations option should be :with_newline or :with_space"}
+    end
+  end
+
+  defp validate_option({option_key, _}) do
+    {:error, "The ConfigParser library does not recognize the option #{inspect option_key}."}
   end
 end
