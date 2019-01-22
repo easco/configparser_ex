@@ -2,6 +2,8 @@ language: elixir
 elixir:
   - 1.8
   - 1.7
+otp_release:
+  - '21.2'
 notifications:
   email:
     - easco@mac.com
