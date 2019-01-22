@@ -1,4 +1,9 @@
-3.0.1 - Fixed compiler warnings for Elixir 1.7.1
+4.0.0 - Changed the way that strings get parsed to use new functionality
+(added in Elixir 1.7) where `StringIO.open` can accept a function for working
+with the device that is automatically closed when the function completes. Since
+this changes the minimum Elixir version this is a major version release.
+
+3.0.1 - Fixed compiler warnings for Elixir 1.7.1 and later
 
 3.0.0 - This represents a significant change for multi-line values.  Prior to
 version 3, the parser would join multi-line values using a single space.  The

@@ -4,10 +4,10 @@ defmodule ConfigParser.Mixfile do
   def project do
     [
       app: :configparser_ex,
-      version: "3.0.1",
+      version: "4.0.0",
       name: "ConfigParser for Elixir",
       source_url: "https://github.com/easco/configparser_ex",
-      elixir: ">= 1.3.0",
+      elixir: ">= 1.7.0",
       description:
         "A module that parses INI-like files. Not unlike the Python configparser package.",
       package: package(),
