@@ -9,9 +9,9 @@ This library implements a parser for config files in the style of Windows INI, a
 ### A note about Mix.Config
 
 This library is intended for compatibility in environments that are already
-using config files in the format described above. If you are working in a
-pure Elixir environment, please consider using `Mix.Config` insead as it is
-part of the core library and provides similar functionality.
+using files in the `configparser` format. For most uses in Elixir, consider
+using `Mix.Config` instead as it is part of the core library and provides
+similar functionality.
 
 ---
 
@@ -20,7 +20,7 @@ part of the core library and provides similar functionality.
 > Starting with Version 3.0, the way the library handles multi-line values has
 > changed! Prior versions of the library would join multi-line values with a
 > single space. Now it joins them with a newline character. This change
-> replicates the behavior of the Python ConfigParser library. 
+> replicates the behavior of the Python ConfigParser library.
 > The release now includes parser options and the `join_continuations` option
 > with the value `:with_space` will revert the library to its prior behavior.
 
@@ -43,7 +43,7 @@ The file shown in this sample defines a section called `config section` and then
      "second_key" => "another_value"}}}
 ```
 
-The `:ok` atom in the frst part of the tuple indicates that parsing was successful.  The map in the second part of the tuple has keys that are the sections created in the file and the values are themselves value maps.  The value maps reflect the keys and values defined within that section.
+The `:ok` atom in the first part of the tuple indicates that parsing was successful.  The map in the second part of the tuple has keys that are the sections created in the file and the values are themselves value maps.  The value maps reflect the keys and values defined within that section.
 
 Config Definitions
 ------------------
@@ -62,7 +62,7 @@ values = can have spaces too
 The value of a particular key can extend over more than one line.  The follow-on lines must be indented farther than the first line.
 
 ```
-[multiline sample]
+[multi-line sample]
 this key's value : continues on more than one line
     but the follow on lines must be indented
     farther than the original one.
@@ -116,7 +116,7 @@ fake_stream = ["[section]", "key1 = value2", "key2:value2"] |> Stream.map(&(&1))
 {:ok, parse_result} = ConfigParser.parse_stream(fake_stream)
 ```
 
-As mentioned previously the result of doing the parsing is a tuple.  If successful, the first element of the tupe is `:ok` and the second element is the parsed result.
+As mentioned previously the result of doing the parsing is a tuple.  If successful, the first element of the tuple is `:ok` and the second element is the parsed result.
 
 If the parser encounters an error, then the first part of the tuple will be the atom `:error` and the second element will be a string describing the error that was encountered:
 
@@ -137,7 +137,7 @@ Starting with Version 3 of the library, it is possible to pass options to the pa
 
 You may add options as keyword arguments to the end of the `parse_file`, `parse_string`, or `parse_stream` functions
 
-    {:ok, parse_result} = ConfigParser.parse_file("/path/to/file", join_continutions: :with_newline)
+    {:ok, parse_result} = ConfigParser.parse_file("/path/to/file", join_continuations: :with_newline)
 
 
 Not Implemented
