@@ -10,7 +10,7 @@ defmodule ConfigParser do
 
     This library is intended for compatibility in environments that are already
     using config files in the format described above. If you are working in a
-    pure Elixir environment, please consider using `Mix.Config` insead as it is
+    pure Elixir environment, please consider using `Mix.Config` instead as it is
     part of the core library and provides similar functionality.
 
     Basic Usage
@@ -36,7 +36,7 @@ defmodule ConfigParser do
 
       {:ok, parse_result} = ConfigParser.parse_stream(fake_stream)
 
-    As shown, the result of doing the parsing is a tuple. If successful, the first element of the tupe is `:ok` and the second element is the parsed result.
+    As shown, the result of doing the parsing is a tuple. If successful, the first element of the tuple is `:ok` and the second element is the parsed result.
 
     If the parser encounters an error, then the first part of the tuple will be the atom `:error` and the second element will be a string describing the error that was encountered:
 
@@ -164,7 +164,7 @@ defmodule ConfigParser do
     This is a convenience routine which calls `ConfigParser.get`
     then tries to construct a integer value from the result.
 
-    See `ConfigParser.get` for explainations of the options.
+    See `ConfigParser.get` for explanations of the options.
   """
   def getint(parser_results, section, key, search_options \\ %{}) do
     value = get(parser_results, section, key, search_options)
@@ -180,7 +180,7 @@ defmodule ConfigParser do
     This is a convenience routine which calls `ConfigParser.get`
     then tries to construct a float value from the result.
 
-    See `ConfigParser.get` for explainations of the options.
+    See `ConfigParser.get` for explanations of the options.
   """
   def getfloat(parser_results, section, key, search_options \\ %{}) do
     value = get(parser_results, section, key, search_options)
@@ -199,7 +199,7 @@ defmodule ConfigParser do
     An option value of "true", "1", "yes", or "on" evaluates to true
     An options value of "false", "0", "no", or "off" evaluates to false
 
-    See `ConfigParser.get` for explainations of the options.
+    See `ConfigParser.get` for explanations of the options.
   """
   def getboolean(parser_results, section, key, search_options \\ %{}) do
     string_value = get(parser_results, section, key, search_options)
@@ -249,7 +249,7 @@ defmodule ConfigParser do
     end
   end
 
-  # If the parse state indicates an error we simply skip over lines and propogate
+  # If the parse state indicates an error we simply skip over lines and propagate
   # the error.
   defp parse_line(_line, parse_state = %ParseState{result: {:error, _error_string}}) do
     parse_state
@@ -340,7 +340,7 @@ defmodule ConfigParser do
     # continuation if
   end
 
-  # Calulate how much whitespace is at the front of the given
+  # Calculate how much whitespace is at the front of the given
   # line.
   defp indent_level(line) do
     [_whole, spaces | _rest] = Regex.run(~r{(\s*).*}, line)
