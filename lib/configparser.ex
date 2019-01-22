@@ -56,7 +56,7 @@ defmodule ConfigParser do
 
     You may add options as keyword arguments to the end of the `parse_file`, `parse_string`, or `parse_stream` functions
 
-        {:ok, parse_result} = ConfigParser.parse_file("/path/to/file", join_continutions: :with_newline)
+        {:ok, parse_result} = ConfigParser.parse_file("/path/to/file", join_continuations: :with_newline)
   """
 
   @doc """
