@@ -1,46 +1,52 @@
 defmodule ConfigParser.Mixfile do
   use Mix.Project
 
+  @source_url "https://github.com/easco/configparser_ex"
+
   def project do
     [
       app: :configparser_ex,
       version: "4.0.0",
       name: "ConfigParser for Elixir",
-      source_url: "https://github.com/easco/configparser_ex",
+      source_url: @source_url,
       elixir: ">= 1.7.0",
-      description:
-        "A module that parses INI-like files. Not unlike the Python configparser package.",
       package: package(),
-      deps: deps()
+      deps: deps(),
+      docs: docs()
     ]
   end
 
-  # Configuration for the OTP application
-  #
-  # Type `mix help compile.app` for more information
   def application do
     []
   end
 
-  # Dependencies can be Hex packages:
-  #
-  #   {:mydep, "~> 0.3.0"}
-  #
-  # Or git/path repositories:
-  #
-  #   {:mydep, git: "https://github.com/elixir-lang/mydep.git", tag: "0.1.0"}
-  #
-  # Type `mix help deps` for more examples and options
   defp deps do
-    [{:earmark, "~> 1.3", only: :dev}, {:ex_doc, "~> 0.19", only: :dev}]
+    [
+      {:ex_doc, ">= 0.0.0", only: :dev, runtime: false}
+    ]
   end
 
   defp package do
     [
+      description: """
+      A module that parses INI-like files. Not unlike the Python configparser
+      package.
+      """,
       maintainers: ["Scott Thompson"],
-      files: ["mix.exs", "lib", "LICENSE*", "README*"],
-      licenses: ["bsd"],
-      links: %{"GitHub" => "https://github.com/easco/configparser_ex"}
+      files: ["mix.exs", "lib", "LICENSE*", "README*", "CHANGELOG*"],
+      licenses: ["BSD"],
+      links: %{
+        "Changelog" => "https://hexdocs.pm/configparser_ex/changelog.html",
+        "GitHub" => @source_url}
+    ]
+  end
+
+  defp docs do
+    [
+      extras: ["CHANGELOG.md", {:"README.md", [title: "Overview"]}],
+      main: "readme",
+      source_url: @source_url,
+      formatters: ["html"]
     ]
   end
 end
