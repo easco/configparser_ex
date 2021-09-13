@@ -34,7 +34,7 @@ defmodule ConfigParser.Mixfile do
       """,
       maintainers: ["Scott Thompson"],
       files: ["mix.exs", "lib", "LICENSE*", "README*", "CHANGELOG*"],
-      licenses: ["BSD"],
+      licenses: ["BSD-3-Clause"],
       links: %{
         "Changelog" => "https://hexdocs.pm/configparser_ex/changelog.html",
         "GitHub" => @source_url}
