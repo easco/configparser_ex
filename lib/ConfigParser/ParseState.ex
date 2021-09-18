@@ -5,7 +5,7 @@
       join_continuations: :with_newline
     }
 
-    @map OrderedMap
+    @map Application.get_env(:configparser_ex, :map_implementation)
 
     defstruct line_number: 1,               # What line of the "file" are we parsing
           current_section: nil,             # Section that definitions go into
