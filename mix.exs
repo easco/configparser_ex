@@ -12,7 +12,8 @@ defmodule ConfigParser.Mixfile do
       elixir: ">= 1.7.0",
       package: package(),
       deps: deps(),
-      docs: docs()
+      docs: docs(),
+      aliases: aliases()
     ]
   end
 
@@ -23,7 +24,7 @@ defmodule ConfigParser.Mixfile do
   defp deps do
     [
       {:ex_doc, ">= 0.0.0", only: :dev, runtime: false},
-      {:ordered_map, "~> 0.0.5", only: [:dev, :test]}
+      {:ordered_map, "~> 0.0.5", only: [:dev, :test, :test_alternative_map]}
     ]
   end
 
@@ -50,5 +51,25 @@ defmodule ConfigParser.Mixfile do
       source_url: @source_url,
       formatters: ["html"]
     ]
+  end
+
+  defp aliases do
+    [
+      {:"test.all", [&test/1, &test_alternative_map/1]}
+    ]
+  end
+
+  defp test(_) do
+    Mix.shell().cmd(
+      "mix test test/configparser_test.exs",
+      env: [{"MIX_ENV", "test"}]
+    )
+  end
+
+  defp test_alternative_map(_) do
+    Mix.shell().cmd(
+      "mix test test/configparser_alternative_map_test.exs",
+      env: [{"MIX_ENV", "test_alternative_map"}]
+    )
   end
 end

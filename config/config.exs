@@ -1,4 +1,11 @@
 use Mix.Config
 
-config :configparser_ex,
-  map_implementation: Map
+case Mix.env() do
+  :test_alternative_map ->
+    config :configparser_ex,
+      map_implementation: OrderedMap
+
+  _ ->
+    config :configparser_ex,
+      map_implementation: Map
+end
