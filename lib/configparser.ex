@@ -1,6 +1,8 @@
 defmodule ConfigParser do
   alias ConfigParser.ParseState, as: ParseState
 
+  @map OrderedMap
+
   @moduledoc """
     The ConfigParser library implements a parser for config files in the style of Windows INI,
     as parsed by the Python [configparser](https://docs.python.org/3/library/configparser.html) library.
@@ -104,7 +106,7 @@ defmodule ConfigParser do
     Return a list of sections in the given config parser state
   """
   def sections(parser_results) do
-    Map.keys(parser_results)
+    @map.keys(parser_results)
   end
 
   @doc """
@@ -120,7 +122,7 @@ defmodule ConfigParser do
   """
   def options(parser_results, in_section) do
     if has_section?(parser_results, in_section) do
-      Map.keys(parser_results[in_section])
+      @map.keys(parser_results[in_section])
     else
       nil
     end

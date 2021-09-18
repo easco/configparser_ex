@@ -5,12 +5,14 @@
       join_continuations: :with_newline
     }
 
+    @map OrderedMap
+
     defstruct line_number: 1,               # What line of the "file" are we parsing
           current_section: nil,             # Section that definitions go into
               last_indent: 0,               # The amount of whitespace on the last line
             continuation?: false,           # Could the line being parsed be a coninuation
                  last_key: nil,             # If this is a continuation, which key would it continue
-                   result: {:ok, %{}},      # The result as it is being built.
+                   result: {:ok, @map.new()},      # The result as it is being built.
                   options: @default_options # options used when parsing the config
     alias __MODULE__
 
@@ -24,12 +26,12 @@
       section_key = String.trim(new_section)
 
       new_result =
-        if Map.has_key?(section_map, section_key) do
+        if @map.has_key?(section_map, section_key) do
           # don't change the result if they section already exists
           parse_state.result
         else
           # add the section as an empty map if it doesn't exist
-          {:ok, Map.put(section_map, section_key, %{}) }
+          {:ok, @map.put(section_map, section_key, @map.new()) }
         end
 
       # next line cannot be a continuation
@@ -49,13 +51,14 @@
         # create a new set of values by adding the key/value pair passed in
         new_values =
           if value == nil do
-            Map.put(value_map, String.trim(key), nil)
+            @map.put(value_map, String.trim(key), nil)
           else
-            Map.put(value_map, String.trim(key), String.trim(value))
+
+            @map.put(value_map, String.trim(key), String.trim(value))
           end
 
         # create a new result replacing the current section with thenew values
-        new_result = {:ok, Map.put(section_map, parse_state.current_section, new_values)}
+        new_result = {:ok, @map.put(section_map, parse_state.current_section, new_values)}
 
         # The next line could be a continuation of this value so set continuation to true
         # and store the key that we're defining now.
@@ -80,7 +83,7 @@
       define_config(parse_state, parse_state.last_key, new_value)
     end
 
-    defp append_continuation(%{join_continuations: :with_newline}, value, continuation) do 
+    defp append_continuation(%{join_continuations: :with_newline}, value, continuation) do
       "#{value}\n#{continuation}"
     end
 

@@ -22,7 +22,8 @@ defmodule ConfigParser.Mixfile do
 
   defp deps do
     [
-      {:ex_doc, ">= 0.0.0", only: :dev, runtime: false}
+      {:ex_doc, ">= 0.0.0", only: :dev, runtime: false},
+      {:ordered_map, "~> 0.0.5", only: [:dev, :test]}
     ]
   end
 
@@ -37,7 +38,8 @@ defmodule ConfigParser.Mixfile do
       licenses: ["BSD"],
       links: %{
         "Changelog" => "https://hexdocs.pm/configparser_ex/changelog.html",
-        "GitHub" => @source_url}
+        "GitHub" => @source_url
+      }
     ]
   end
 
