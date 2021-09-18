@@ -135,6 +135,16 @@ You may add options as keyword arguments to the end of the `parse_file`, `parse_
 {:ok, parse_result} = ConfigParser.parse_file("/path/to/file", join_continuations: :with_newline)
 ```
 
+## Alternative Map Implementations
+
+By default, `configparser_ex` uses `Map` provided by Elixir. It also supports other `Map`-compatible implementations.
+
+For example, if you want to use an order-preserving map implementation, try [`ordered_map`](https://github.com/jonnystorm/ordered-map-elixir) with following configuration:
+
+```elixir
+config :configparser_ex, map_implementation: OrderedMap
+```
+
 ## Not Implemented
 
 This library is primarily intended to provide backward-compatibility in environments that already use config files. It does not handle creating, manipulating, or writing config files.  It treats config files as read-only entities.
