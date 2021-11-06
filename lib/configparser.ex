@@ -74,10 +74,11 @@ defmodule ConfigParser do
     Parse a string as if it was the content of a config file.
   """
   def parse_string(config_string, parser_options \\ []) do
-    {:ok, result} = StringIO.open(config_string, fn io_device ->
-      line_stream = IO.stream(io_device, :line)
-      parse_stream(line_stream, parser_options)
-    end)
+    {:ok, result} =
+      StringIO.open(config_string, fn io_device ->
+        line_stream = IO.stream(io_device, :line)
+        parse_stream(line_stream, parser_options)
+      end)
 
     result
   end
