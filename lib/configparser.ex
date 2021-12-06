@@ -375,7 +375,7 @@ defmodule ConfigParser do
   end
 
   defp options_to_map([]), do: ParseState.default_options()
-  defp options_to_map(options) when is_list(options), do: Enum.into(options, %{})
+  defp options_to_map(options) when is_list(options), do: Map.merge(ParseState.default_options(), Enum.into(options , %{}))
 
   defp validate_options(%{} = options_map) do
     Enum.reduce(options_map, {:ok, options_map}, &option_reducer/2)
