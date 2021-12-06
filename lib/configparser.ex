@@ -400,6 +400,15 @@ defmodule ConfigParser do
     end
   end
 
+  defp validate_option({:overwrite_sections, value} = pair) do
+    if is_boolean(value) do
+      {:ok, pair}
+    else
+      {:error,
+       "The value for the overwrite_sections option should be true or false"}
+    end
+  end
+
   defp validate_option({:join_continuations, value} = pair) do
     if value == :with_newline || value == :with_space do
       {:ok, pair}

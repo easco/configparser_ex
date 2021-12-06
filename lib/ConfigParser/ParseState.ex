@@ -2,7 +2,8 @@
     @moduledoc false
 
     @default_options %{
-      join_continuations: :with_newline
+      join_continuations: :with_newline,
+      overwrite_sections: true
     }
 
     defstruct line_number: 1,               # What line of the "file" are we parsing
@@ -20,8 +21,18 @@
       # Create a new result, based on the old, with the new section added
       {:ok, section_map} = parse_state.result
 
-      # Only add a new section if it's not already there
-      section_key = String.trim(new_section)
+      section_key = 
+        if not parse_state.options.overwrite_sections do
+          # Numbering the sections with nnn_ prefix
+          section_num = Map.keys(section_map)
+                        |> Enum.count()
+                        |> Integer.to_string
+                        |> String.pad_leading(3, "0")
+          section_num<>"_"<>String.trim(new_section)
+        else
+          # Only add a new section if it's not already there
+          String.trim(new_section)
+        end
 
       new_result =
         if Map.has_key?(section_map, section_key) do
