@@ -149,7 +149,7 @@ defmodule ConfigParserTest do
       sorted_options = Enum.sort(ConfigParser.options(parse_result, "section"), &(&1 < &2))
       assert sorted_options == ["one", "three", "two"]
 
-      assert nil == ConfigParser.options(parse_result, "non-existant section")
+      assert nil == ConfigParser.options(parse_result, "non-existent section")
   end
 
   test "determines if a particuliar option is available in a section" do
@@ -170,7 +170,7 @@ defmodule ConfigParserTest do
         one = for the money
         """)
 
-      assert ConfigParser.get(parse_result, "non-existant", "one") == nil
+      assert ConfigParser.get(parse_result, "non-existent", "one") == nil
   end
 
   test "returns the value of a particular option when no fancy options are provided" do
@@ -203,8 +203,8 @@ defmodule ConfigParserTest do
         one = for the money
         """)
 
-      assert ConfigParser.get(parse_result, "non-existant", "_", fallback: "None") == "None"
-      assert ConfigParser.get(parse_result, "section", "non-existant", fallback: "None") == "None"
+      assert ConfigParser.get(parse_result, "non-existent", "_", fallback: "None") == "None"
+      assert ConfigParser.get(parse_result, "section", "non-existent", fallback: "None") == "None"
   end
 
   test "correctly handles the case where a section is repeated or reopened" do

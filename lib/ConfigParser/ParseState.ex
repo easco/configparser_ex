@@ -8,7 +8,7 @@
     defstruct line_number: 1,               # What line of the "file" are we parsing
           current_section: nil,             # Section that definitions go into
               last_indent: 0,               # The amount of whitespace on the last line
-            continuation?: false,           # Could the line being parsed be a coninuation
+            continuation?: false,           # Could the line being parsed be a continuation
                  last_key: nil,             # If this is a continuation, which key would it continue
                    result: {:ok, %{}},      # The result as it is being built.
                   options: @default_options # options used when parsing the config
