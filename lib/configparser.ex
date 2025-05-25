@@ -255,47 +255,68 @@ defmodule ConfigParser do
     parse_state
   end
 
+  # Regex matching a line containing a section definition "[section]"
   @section_regex ~r{^\s*\[([^\]]+)\]\s*$}
+
+  # Regex matching key-value pairs separated by equals "key = value"
   @equals_definition_regex ~r{^\s*([^=]+?)\s*=\s*(.*)$}
+
+  # Regex matching key-value pairs separated by colon "key: value"
   @colon_definition_regex ~r{^\s*([^:]+?)\s*:\s*(.*)$}
+
+  # Regex matching a standalone value line (no delimiter), interpreted as a key with nil value
   @value_like_regex ~r{^\s*(\S.*)$}
 
+  # Parse a line while the parse state indicates we're in a good state
   defp parse_line(line, parse_state = %ParseState{result: {:ok, _}}) do
     line = strip_inline_comments(line)
+
+    # find out how many whitespace characters are on the front of the line
     indent_level = indent_level(line)
 
     cond do
       parse_state.continuation? && indent_level > parse_state.last_indent &&
    Regex.run(@value_like_regex, line) ->
+        # note that we do not increase the "last indent"
         %{
    ParseState.append_continuation(parse_state, String.trim(line))
    | line_number: parse_state.line_number + 1,
      continuation?: true
         }
 
+      # if we can skip this line (it's empty or a comment) then simply advance the line number
+      # and note that the next line can't be a continuation
       can_skip_line(line) ->
         %{parse_state | line_number: parse_state.line_number + 1, continuation?: false, last_indent: indent_level}
 
+
+      # match a line that begins a new section like "[new_section]"
       match = Regex.run(@section_regex, line) ->
         [_, new_section] = match
         %{ParseState.begin_section(parse_state, new_section)
    | line_number: parse_state.line_number + 1, last_indent: indent_level}
 
+
+      # match a line that defines a value "key = value"
       match = Regex.run(@equals_definition_regex, line) ->
         [_, key, value] = match
         %{ParseState.define_config(parse_state, key, value)
    | line_number: parse_state.line_number + 1, last_indent: indent_level}
 
+      # match a line that defines a value "key : value"
       match = Regex.run(@colon_definition_regex, line) ->
         [_, key, value] = match
         %{ParseState.define_config(parse_state, key, value)
    | line_number: parse_state.line_number + 1, last_indent: indent_level}
 
+      # when there's a value-ish line that on a line by itself, but which is not a continuation
+      # then it actually represents a key that has no associated value (or a value of nil)
       match = Regex.run(@value_like_regex, line) ->
         [_, key] = match
         %{ParseState.define_config(parse_state, key, nil)
    | continuation?: false, line_number: parse_state.line_number + 1, last_indent: indent_level}
 
+      # Any non-matching lines result in a syntax error
       true ->
         %{parse_state | result: {:error, "Syntax Error on line #{parse_state.line_number}"}}
     end
