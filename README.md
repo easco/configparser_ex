@@ -7,14 +7,17 @@
 [![License](https://img.shields.io/hexpm/l/configparser_ex.svg)](https://github.com/easco/configparser_ex/blob/master/LICENSE)
 [![Last Updated](https://img.shields.io/github/last-commit/easco/configparser_ex.svg)](https://github.com/easco/configparser_ex/commits/master)
 
-This library implements a parser for config files in the style of Windows INI, as parsed by the Python [configparser](https://docs.python.org/3/library/configparser.html) library.
+This library implements a parser for config files in the style of Windows INI, 
+as parsed by the Python 
+[configparser](https://docs.python.org/3/library/configparser.html) library. A 
+goal of this library is to replicate that module though not all of its features
+are re-implemented here.
 
-### A note about Mix.Config
+### A note about Elixir's Config
 
 This library is intended for compatibility in environments that are already
 using files in the `configparser` format. For most uses in Elixir, consider
-using `Mix.Config` instead as it is part of the core library and provides
-similar functionality.
+using the built in `Config` module instead as it provides similar functionality.
 
 > **Release Notes**
 >
@@ -147,6 +150,6 @@ This library does not support the Python ConfigParser's customization features.
 
 ## Copyright and License
 
-Copyright (c) 2015 R. Scott Thompson
+Copyright (c) 2015-2025 R. Scott Thompson
 
 Released under the BSD License, which can be found in the repository in [`LICENSE`](https://github.com/easco/configparser_ex).

@@ -1,5 +1,9 @@
 # Changelog
 
+## 5.0.0
+
+Changes the parser to allow for values that include square brackets.
+
 ## 4.0.0
 
 Changed the way that strings get parsed to use new functionality

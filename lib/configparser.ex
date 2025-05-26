@@ -5,13 +5,13 @@ defmodule ConfigParser do
     The ConfigParser library implements a parser for config files in the style of Windows INI,
     as parsed by the Python [configparser](https://docs.python.org/3/library/configparser.html) library.
 
-    A note about `Mix.Config`
+    A note about `Config`
     ---------------------------
 
     This library is intended for compatibility in environments that are already
-    using config files in the format described above. If you are working in a
-    pure Elixir environment, please consider using `Mix.Config` instead as it is
-    part of the core library and provides similar functionality.
+    using ini-style files in the format described above. If you are working in a
+    pure Elixir environment, please consider using Elixir's built-in `Config`
+    instead as it is part of the core library and provides similar functionality.
 
     Basic Usage
     -----------
@@ -72,10 +72,11 @@ defmodule ConfigParser do
     Parse a string as if it was the content of a config file.
   """
   def parse_string(config_string, parser_options \\ []) do
-    {:ok, result} = StringIO.open(config_string, fn io_device ->
-      line_stream = IO.stream(io_device, :line)
-      parse_stream(line_stream, parser_options)
-    end)
+    {:ok, result} =
+      StringIO.open(config_string, fn io_device ->
+        line_stream = IO.stream(io_device, :line)
+        parse_stream(line_stream, parser_options)
+      end)
 
     result
   end
@@ -276,45 +277,65 @@ defmodule ConfigParser do
 
     cond do
       parse_state.continuation? && indent_level > parse_state.last_indent &&
-   Regex.run(@value_like_regex, line) ->
+          Regex.run(@value_like_regex, line) ->
         # note that we do not increase the "last indent"
         %{
-   ParseState.append_continuation(parse_state, String.trim(line))
-   | line_number: parse_state.line_number + 1,
-     continuation?: true
+          ParseState.append_continuation(parse_state, String.trim(line))
+          | line_number: parse_state.line_number + 1,
+            continuation?: true
         }
 
       # if we can skip this line (it's empty or a comment) then simply advance the line number
       # and note that the next line can't be a continuation
       can_skip_line(line) ->
-        %{parse_state | line_number: parse_state.line_number + 1, continuation?: false, last_indent: indent_level}
-
+        %{
+          parse_state
+          | line_number: parse_state.line_number + 1,
+            continuation?: false,
+            last_indent: indent_level
+        }
 
       # match a line that begins a new section like "[new_section]"
       match = Regex.run(@section_regex, line) ->
         [_, new_section] = match
-        %{ParseState.begin_section(parse_state, new_section)
-   | line_number: parse_state.line_number + 1, last_indent: indent_level}
 
+        %{
+          ParseState.begin_section(parse_state, new_section)
+          | line_number: parse_state.line_number + 1,
+            last_indent: indent_level
+        }
 
       # match a line that defines a value "key = value"
       match = Regex.run(@equals_definition_regex, line) ->
         [_, key, value] = match
-        %{ParseState.define_config(parse_state, key, value)
-   | line_number: parse_state.line_number + 1, last_indent: indent_level}
+
+        %{
+          ParseState.define_config(parse_state, key, value)
+          | line_number: parse_state.line_number + 1,
+            last_indent: indent_level
+        }
 
       # match a line that defines a value "key : value"
       match = Regex.run(@colon_definition_regex, line) ->
         [_, key, value] = match
-        %{ParseState.define_config(parse_state, key, value)
-   | line_number: parse_state.line_number + 1, last_indent: indent_level}
+
+        %{
+          ParseState.define_config(parse_state, key, value)
+          | line_number: parse_state.line_number + 1,
+            last_indent: indent_level
+        }
 
       # when there's a value-ish line that on a line by itself, but which is not a continuation
       # then it actually represents a key that has no associated value (or a value of nil)
       match = Regex.run(@value_like_regex, line) ->
         [_, key] = match
-        %{ParseState.define_config(parse_state, key, nil)
-   | continuation?: false, line_number: parse_state.line_number + 1, last_indent: indent_level}
+
+        %{
+          ParseState.define_config(parse_state, key, nil)
+          | continuation?: false,
+            line_number: parse_state.line_number + 1,
+            last_indent: indent_level
+        }
 
       # Any non-matching lines result in a syntax error
       true ->

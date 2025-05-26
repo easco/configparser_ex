@@ -6,7 +6,7 @@ defmodule ConfigParser.Mixfile do
   def project do
     [
       app: :configparser_ex,
-      version: "4.0.0",
+      version: "5.0.0",
       name: "ConfigParser for Elixir",
       source_url: @source_url,
       elixir: ">= 1.7.0",
@@ -37,7 +37,8 @@ defmodule ConfigParser.Mixfile do
       licenses: ["BSD-3-Clause"],
       links: %{
         "Changelog" => "https://hexdocs.pm/configparser_ex/changelog.html",
-        "GitHub" => @source_url}
+        "GitHub" => @source_url
+      }
     ]
   end
 
