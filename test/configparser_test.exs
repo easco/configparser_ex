@@ -207,6 +207,30 @@ defmodule ConfigParserTest do
       assert ConfigParser.get(parse_result, "section", "non-existent", fallback: "None") == "None"
   end
 
+  test "correctly handles a value with brackets [ ]" do
+    {:ok, parse_result} = ConfigParser.parse_string("""
+      [section]
+      key=[value]
+      spaces in keys=allowed
+      bracketsinvalues=allowed
+
+      [section2]
+      inanothersection=sure
+      mixed spacing conventions = [ of course ]
+      even with quotes and odd spacing = "[ yes]"
+
+      [section 3]
+      key=value1
+      key=value2
+      key=value3
+      key4= Preston Says Hi
+      key=value5
+    """)
+
+    assert ConfigParser.get(parse_result, "section", "key") == "[value]"
+    assert ConfigParser.get(parse_result, "section 3", "key4") == "Preston Says Hi"
+  end
+
   test "correctly handles the case where a section is repeated or reopened" do
     {:ok, parse_result} = ConfigParser.parse_string("""
       [Simple Values]
