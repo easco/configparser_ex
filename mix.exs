@@ -6,7 +6,7 @@ defmodule ConfigParser.Mixfile do
   def project do
     [
       app: :configparser_ex,
-      version: "5.0.0",
+      version: "5.0.1",
       name: "ConfigParser for Elixir",
       source_url: @source_url,
       elixir: ">= 1.7.0",

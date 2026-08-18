@@ -1,5 +1,9 @@
 # Changelog
 
+## 5.0.1
+
+Incorporates fixes from contributore which eliminate deprecation warnings with recent versions of Elixir and add markdown to the list of doc generators.
+
 ## 5.0.0
 
 Changes the parser to allow for values that include square brackets.

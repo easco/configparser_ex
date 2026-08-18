@@ -19,15 +19,6 @@ This library is intended for compatibility in environments that are already
 using files in the `configparser` format. For most uses in Elixir, consider
 using the built in `Config` module instead as it provides similar functionality.
 
-> **Release Notes**
->
-> Starting with Version 3.0, the way the library handles multi-line values has
-> changed! Prior versions of the library would join multi-line values with a
-> single space. Now it joins them with a newline character. This change
-> replicates the behavior of the Python ConfigParser library.
-> The release now includes parser options and the `join_continuations` option
-> with the value `:with_space` will revert the library to its prior behavior.
-
 Basic config files look like this:
 
 ```ini
@@ -150,6 +141,6 @@ This library does not support the Python ConfigParser's customization features.
 
 ## Copyright and License
 
-Copyright (c) 2015-2025 R. Scott Thompson
+Copyright (c) 2015-2026 R. Scott Thompson
 
 Released under the BSD License, which can be found in the repository in [`LICENSE`](https://github.com/easco/configparser_ex).

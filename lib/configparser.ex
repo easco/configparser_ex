@@ -64,7 +64,13 @@ defmodule ConfigParser do
     Attempts to opens and parses the contents of that file.
   """
   def parse_file(config_file_path, parser_options \\ []) do
-    file_stream = File.stream!(config_file_path, :line, [])
+    file_stream =
+      if Version.match?(System.version(), ">= 1.16.0") do
+        File.stream!(config_file_path, :line, [])
+      else
+        File.stream!(config_file_path, [], :line)
+      end
+
     parse_stream(file_stream, parser_options)
   end
 
