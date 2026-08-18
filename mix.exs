@@ -47,7 +47,7 @@ defmodule ConfigParser.Mixfile do
       extras: ["CHANGELOG.md", {:"README.md", [title: "Overview"]}],
       main: "readme",
       source_url: @source_url,
-      formatters: ["html"]
+      formatters: ["html", "markdown"]
     ]
   end
 end
